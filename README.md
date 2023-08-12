@@ -1,99 +1,16 @@
 # **Controle de projetos - KenzieVelopers**
 
-## **Introdução**
+### **Introdução**
 
 Uma startup de tecnologia e desenvolvimento web decidiu criar uma API Rest para gerenciar seus desenvolvedores e projetos. Como você é um dos novos integrantes da equipe, você foi o escolhido para desenvolver essa aplicação.
 
 Através dessa API deve ser possível realizar o registro do desenvolvedor, associar informações extras ao mesmo e registrar os projetos de cada desenvolvedor.
 
-A seguir estarão todas as regras de negócio definidas pela startup para esse projeto. Lembre-se de seguir à risca todas as regras impostas.
-
-Vamos lá?!
-
-#
-
-## **Regras da entrega**
-
-A entrega deve seguir as seguintes regras:
-
-- O código deve estar em TypeScript, caso não esteja a **entrega será zerada**;
-- Deverá ser utilizado um banco de dados **_postgres_** para a elaboração da API;
-- O nome da tabela, das colunas e demais especificações, devem ser seguidas **à risca**. Caso tenha divergência, **será descontado nota**;
-- **Tenha muita atenção sobre o nome das chaves nos objetos de entrada e saída de cada requisição**;
-- **Na raiz do diretório** deve-se conter uma pasta nomeada **sql**, com dois arquivos:
-
-  - **createTables.sql**: contendo as queries de criação e inserção das tabelas;
-  - **diagram.png/jpg**: um arquivo **_.png_** ou **_.jpg_** contendo o diagrama da tabela;
-    - caso o arquivo **_createTables.sql_** não exista, **a entrega será zerada**.
-
-**Essa entrega possui testes automatizados**;
-
-- É necessário executar um **npm install** assim que fizer o clone do repositório para que as depedências dos testes sejam instaladas.
-- É necessário criar um banco de dados separado para a execução dos testes.
-  - Faça a criação do banco de testes e coloque os dados de conexão dele nas variáveis de ambiente que contém o indicador **_TEST_** no nome, assim sua aplicação vai saber em qual banco deve se conectar no momento de executar os testes, evitando inconsistência nos dados.
-- Para que os testes possam ser executados, existe um script de limpeza do banco que utiliza as queries do arquivo **createTables.sql** para ser executado, por isso é importante seguir as orientações sobre subdiretório sql e seus arquivos à risca.
-
-  - Caso o subdiretório sql e o arquivo createTables.sql não estejam com os nomes corretos ou no caminho correto os testes falharão, pois não será possível encontrar as queries a serem executadas;
-  - Caso o nome de alguma tabela, tipo ou coluna não esteja de acordo com o esperado, os testes também falharão.
-
-- A organização dos demais arquivos e pastas deve seguir o que foi visto previamente.
-- Todos os pacotes necessários para desenvolver a aplicação devem ser instalados, já que apenas os pacotes de teste foram incluídos no repositório.
-
-#
-
-## **Tabelas do banco de dados**
-
-### **Tabela developers**
-
-- Nome da tabela: **_developers_**.
-- Colunas:
-  - **id**: número, incrementação automática e chave primária.
-  - **name**: string, tamanho 50 e obrigatório.
-  - **email**: string, tamanho 50, obrigatório e único.
-
-### **Tabela developerInfos**
-
-- Nome da tabela: **_developerInfos_**.
-- Colunas:
-  - **id**: número, incrementação automática e chave primária.
-  - **developerSince**: data e obrigatório.
-  - **preferredOS**: OS e obrigatório.
-  - **developerId**: inteiro, único, obrigatório e chave estrangeira.
-- Especificações:
-  - O campo **preferredOS** deve aceitar apenas os valores: Windows, Linux e MacOS.
-  - O tipo **OS** deve ser feito usando um **ENUM**.
-
-### **Tabela projects**
-
-- Nome da tabela: **_projects_**.
-- Colunas:
-  - **id**: número, incrementação automática e chave primária.
-  - **name**: string, tamanho 50 e obrigatório.
-  - **description**: texto.
-  - **repository**: string, tamanho 120 e obrigatório.
-  - **startDate**: data e obrigatório.
-  - **endDate**: data.
-  - **developerId**: inteiro e chave estrangeira.
-
-#
-
-## **Relacionamentos**
-
-### **developers e developerInfos**
-
-- Um desenvolvedor pode ter apenas uma informação adicional, assim como, uma informação adicional pode pertencer a apenas um desenvolvedor.
-- Caso o **_developer_** seja deletado, a **_developerInfo_** ligada a ele deve ser **deletada** automaticamente.
-
-### **developers e projects**
-
-- Um desenvolvedor pode ter muitos projetos, porém, um projeto pode pertencer a apenas um desenvolvedor.
-- Caso um **_developer_** seja deletado, a coluna **_developerId_** do projeto associado deve ser automaticamente alterada para **NULL**.
-
-#
+# Regras da aplicação
 
 ## **Rotas - /developers**
 
-## Endpoints
+### Endpoints
 
 | Método | Endpoint              | Responsabilidade                                    |
 | ------ | --------------------- | --------------------------------------------------- |
@@ -105,13 +22,7 @@ A entrega deve seguir as seguintes regras:
 
 #
 
-## Regras da aplicação
-
 ### **POST /developers**
-
-- Deve ser possível criar um developer enviando apenas **_name_** e **_email_** através do corpo da requisição;
-  - ambos devem ser uma string;
-- Não deve ser possível cadastrar um developer enviando um email já cadastrado no banco de dados.
 
 - **Sucesso**:
   - Retorno esperado: um objeto contendo os dados do developer cadastrado
@@ -166,19 +77,6 @@ A entrega deve seguir as seguintes regras:
 
 ### **GET /developers/:id**
 
-- Através do id de um desenvolvedor, deve retornar um objeto contendo dados das seguintes tabelas:
-
-  - **_developers_**;
-  - **_developerInfos_**;
-
-- Os dados devem ser retornados exatamente como definidos aqui. Você pode usar apelidos (alias) para realizar essa tarefa:
-
-  - **developerId**: tipo **_number_**;
-  - **developerName**: tipo **_string_**;
-  - **developerEmail**: tipo **_string_**;
-  - **developerInfoDeveloperSince**: tipo **_Date_** ou **_null_**;
-  - **developerInfoPreferredOS**: tipo **_string_** ou **_null_**;
-
 - **Sucesso**:
   - Retorno esperado: um objeto contendo os dados mesclados das tabelas **_developers_** e **_developerInfos_**;
   - Status esperado: _200 OK_;
@@ -225,8 +123,6 @@ A entrega deve seguir as seguintes regras:
 
 ### **PATCH /developers/:id**
 
-- Através do id de um desenvolvedor, deve ser possível atualizar os dados de **_email_** e **_name_**.
-- O retorno deverá ser um objeto contendo todos os dados do developer, depois da atualização ter sido realizada.
 - **Sucesso**:
 
   - Retorno esperado: um objeto com os dados atualizados de developer;
@@ -302,8 +198,6 @@ A entrega deve seguir as seguintes regras:
 
 ### **DELETE /developers/:id**
 
-- Deve ser possível deletar um developer informando apenas seu **_id_**;
-
 - **Sucesso**:
   - Retorno esperado: nenhum. Não deve retornar nenhum body;
   - Status esperado: _204 NO CONTENT_
@@ -341,15 +235,6 @@ A entrega deve seguir as seguintes regras:
 #
 
 ### **POST /developers/:id/infos**
-
-- Deve ser possível inserir uma informação adicional a um developer informando seu **_id_**;
-- Deve ser possível inserir os dados _developerSince_ e _preferedOS_;
-
-  - _developerSince_ deve ser uma data;
-  - _preferredOS_ deve ser apenas um dos três tipos possíveis:
-    - Windows
-    - Linux
-    - MacOS
 
 - **Sucesso**:
   - Retorno esperado: objeto contendo as seguintes chaves:
@@ -438,7 +323,7 @@ A entrega deve seguir as seguintes regras:
 
 ## **Rota - /projects**
 
-## Endpoints
+### Endpoints
 
 | Método | Endpoint      | Responsabilidade                                      |
 | ------ | ------------- | ----------------------------------------------------- |
@@ -449,16 +334,6 @@ A entrega deve seguir as seguintes regras:
 ## Regras da aplicação
 
 ### **POST - /projects**
-
-- Deve ser possível cadastrar um novo projeto enviando os seguintes dados:
-  - **name**: tipo **_string_**
-  - **description**: tipo **_string_**
-  - **repository**: tipo **_string_**
-  - **startDate**: tipo **_Date_**, formato americano YYYY-MM-DD.
-  - **endDate**: tipo **_Date_**, formato americano YYYY-MM-DD, não obrigatório.
-  - **developerId**: tipo **_number_**, não obrigatório.
-- No body de retorno, caso o _endDate_ não seja enviado na criação, deve ser retornado um _null_;
-- No body de retorno, caso o _developerId_ não seja enviado na criação, deve ser retornado um _null_;
 
 - **Sucesso**:
 
@@ -540,18 +415,6 @@ A entrega deve seguir as seguintes regras:
 
 ### **GET - /projects/:id**
 
-- Deve ser possível retornar os dados de um _project_ a partir do _id_ desse projeto;
-- O retorno deve ser um de objeto e cada objeto deve retornar os dados da tabela de **_projects_** e o nome do developer vindo da tabela de **_developers_**
-- Cada objeto deve conter as seguintes chaves:
-
-  - **projectId**
-  - **projectName**
-  - **projectDescription**
-  - **projectRepository**
-  - **projectStartDate**
-  - **projectEndDate**
-  - **projectDeveloperName**
-
 - **Sucesso**:
   - Retorno esperado: um objeto contendo todos os dados relacionados ao projeto e o nome do desenvolvedor;
   - Status esperado: _200 OK_
@@ -595,8 +458,6 @@ A entrega deve seguir as seguintes regras:
 
 ### **PATCH - /projects/:id**
 
-- Deverá ser possível atualizar todos os dados de um projeto com exceção do _id_;
-- Todos os dados permitidos para atualização devem ser opcionais no envio;
 - **Sucesso**:
   - Retorno esperado: objeto contendo todos os dados do projeto que foi atualizado;
   - Status esperado: _200 OK_
