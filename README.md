@@ -23,7 +23,6 @@
     - [GET `/projects/:id`](#get-projectsid)
     - [PATCH `/projects/:id`](#patch-projectsid)
 - [Contribuição](#contribuição)
-- [Licença](#licença)
 
 ## Sobre o Projeto
 
