@@ -1,537 +1,246 @@
-# **Controle de projetos - KenzieVelopers**
 
-### **Introdução**
+# Controle de Projetos - KenzieVelopers
 
-Uma startup de tecnologia e desenvolvimento web decidiu criar uma API Rest para gerenciar seus desenvolvedores e projetos. Como você é um dos novos integrantes da equipe, você foi o escolhido para desenvolver essa aplicação.
+![GitHub repo size](https://img.shields.io/github/repo-size/JhonnatanDouglas/controle-de-projetos-kenzievelopers)
+![GitHub last commit](https://img.shields.io/github/last-commit/JhonnatanDouglas/controle-de-projetos-kenzievelopers)
 
-Através dessa API deve ser possível realizar o registro do desenvolvedor, associar informações extras ao mesmo e registrar os projetos de cada desenvolvedor.
+## Índice
 
-# Regras da aplicação
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Iniciando](#iniciando)
+  - [Pré-requisitos](#pré-requisitos)
+  - [Instalação](#instalação)
+- [Rotas](#rotas)
+  - [Desenvolvedores](#desenvolvedores)
+    - [POST `/developers`](#post-developers)
+    - [GET `/developers/:id`](#get-developersid)
+    - [PATCH `/developers/:id`](#patch-developersid)
+    - [DELETE `/developers/:id`](#delete-developersid)
+    - [POST `/developers/:id/infos`](#post-developersidinfos)
+  - [Projetos](#projetos)
+    - [POST `/projects`](#post-projects)
+    - [GET `/projects/:id`](#get-projectsid)
+    - [PATCH `/projects/:id`](#patch-projectsid)
+- [Contribuição](#contribuição)
+- [Licença](#licença)
 
-## **Rotas - /developers**
+## Sobre o Projeto
 
-### Endpoints
+Uma startup de tecnologia e desenvolvimento web decidiu criar uma API Rest para gerenciar seus desenvolvedores e projetos. Esta aplicação permite o registro de desenvolvedores, associação de informações extras a eles e registro de projetos de cada desenvolvedor.
 
-| Método | Endpoint              | Responsabilidade                                    |
-| ------ | --------------------- | --------------------------------------------------- |
-| POST   | /developers           | Cadastrar um novo desenvolvedor                     |
-| GET    | /developers/:id       | Listar um desenvolvedor e suas informações          |
-| PATCH  | /developers/:id       | Atualizar os dados de um desenvolvedor              |
-| DELETE | /developers/:id       | Remover um desenvolvedor                            |
-| POST   | /developers/:id/infos | Cadastrar informações adicionais a um desenvolvedor |
+## Tecnologias Utilizadas
 
-#
+![TypeScript](https://img.shields.io/badge/TypeScript-4.x-blue.svg)
+![Node.js](https://img.shields.io/badge/Node.js-latest-green.svg)
+![Express](https://img.shields.io/badge/Express-4.x-blue.svg)
+![pg](https://img.shields.io/badge/pg-8.x-blue.svg)
+![pg-format](https://img.shields.io/badge/pg--format-latest-lightgrey.svg)
+![dotenv](https://img.shields.io/badge/dotenv-latest-yellow.svg)
 
-### **POST /developers**
+## Iniciando
 
-- **Sucesso**:
-  - Retorno esperado: um objeto contendo os dados do developer cadastrado
-  - Status esperado: _201 CREATED_
-- **Falha**:
+Siga as instruções abaixo para iniciar o projeto em sua máquina local.
 
-  - Caso o email já cadastrado no banco
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _409 CONFLICT_.
+### Pré-requisitos
 
-- **Exemplos de retornos**:
-  | Dados de entrada: |
-  | ----------------- |
-  | Body: Formato Json |
+- Node.js e npm instalados
+- Banco de dados PostgreSQL configurado
 
-  ```json
-  {
-    "email": "ugo@kenzie.com.br",
-    "name": "Ugo"
-  }
-  ```
+### Instalação
 
-  - Criando um developer com sucesso:
+1. Clone o repositório
+   ```sh
+   git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+   ```
+2. Instale as dependências
+   ```sh
+   npm install
+   ```
+3. Configure as variáveis de ambiente (crie um arquivo `.env` na raiz do projeto)
+   ```env
+   DB_HOST=seu_host
+   DB_USER=seu_usuario
+   DB_PASSWORD=sua_senha
+   DB_DATABASE=seu_banco
+   ```
+4. Execute a aplicação
+   ```sh
+   npm run dev
+   ```
 
-    | Resposta do servidor:      |
-    | -------------------------- |
-    | Body: Formato Json         |
-    | Status code: _201 CREATED_ |
+## Rotas
 
-    ```json
-    {
-      "id": 1,
-      "name": "Ugo",
-      "email": "ugo@kenzie.com.br"
-    }
-    ```
+### Desenvolvedores
 
-  - Tentando cadastrar com um email existente:
+#### POST `/developers`
 
-    | Resposta do servidor:       |
-    | --------------------------- |
-    | Body: Formato Json          |
-    | Status code: _409 CONFLICT_ |
+Cadastra um novo desenvolvedor.
 
-    ```json
-    {
-      "message": "Email already exists."
-    }
-    ```
-
-#
-
-### **GET /developers/:id**
-
-- **Sucesso**:
-  - Retorno esperado: um objeto contendo os dados mesclados das tabelas **_developers_** e **_developerInfos_**;
-  - Status esperado: _200 OK_;
-- **Falha**:
-
-  - Caso o id informado não pertença à nenhum developer cadastrado
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _404 NOT FOUND_.
-
-- **Exemplos de retornos**:
-
-  - Listando um developer com sucesso:
-
-    | Resposta do servidor: |
-    | --------------------- |
-    | Body: Formato Json    |
-    | Status code: _200 OK_ |
-    |                       |
-
-    ```json
-    {
-      "developerId": 1,
-      "developerName": "Ugo",
-      "developerEmail": "ugo@kenzie.com.br",
-      "developerInfoDeveloperSince": null,
-      "developerInfoPreferredOS": null
-    }
-    ```
-
-  - Tentando listar com um id inexistente:
-
-    | Resposta do servidor:        |
-    | ---------------------------- |
-    | Body: Formato Json           |
-    | Status code: _404 NOT FOUND_ |
-
-    ```json
-    {
-      "message": "Developer not found."
-    }
-    ```
-
-#
-
-### **PATCH /developers/:id**
-
-- **Sucesso**:
-
-  - Retorno esperado: um objeto com os dados atualizados de developer;
-  - Status esperado: _200 OK_.
-
-- **Falha**:
-
-  - Caso o id informado não pertence à nenhum developer cadastrado
-
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _404 NOT FOUND_.
-
-  - Caso o email já esteja cadastrado no banco
-
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _409 CONFLICT_.
-
-- **Exemplos de retornos**:
-  | Dados de entrada: |
-  | ----------------- |
-  | Body: Formato Json |
+- **Body de Requisição:**
 
   ```json
   {
-    "email": "ugo.roveda@kenzie.com.br",
-    "name": "Ugo Roveda"
+    "name": "Nome do Desenvolvedor",
+    "email": "email@example.com"
   }
   ```
 
-  - Atualizando um developer com sucesso:
-
-    | Resposta do servidor: |
-    | --------------------- |
-    | Body: Formato Json    |
-    | Status code: _200 OK_ |
-    |                       |
-
-    ```json
-    {
-      "id": 1,
-      "email": "ugo.roveda@kenzie.com.br",
-      "name": "Ugo Roveda"
-    }
-    ```
-
-  - Tentando atualizar para um email existente:
-
-    | Resposta do servidor:       |
-    | --------------------------- |
-    | Body: Formato Json          |
-    | Status code: _409 CONFLICT_ |
-
-    ```json
-    {
-      "message": "Email already exists."
-    }
-    ```
-
-  - Tentando listar com um id inexistente:
-
-    | Resposta do servidor:        |
-    | ---------------------------- |
-    | Body: Formato Json           |
-    | Status code: _404 NOT FOUND_ |
-
-    ```json
-    {
-      "message": "Developer not found."
-    }
-    ```
-
-#
-
-### **DELETE /developers/:id**
-
-- **Sucesso**:
-  - Retorno esperado: nenhum. Não deve retornar nenhum body;
-  - Status esperado: _204 NO CONTENT_
-- **Falha**:
-
-  - Caso o id informado não pertença a nenhum developer cadastrado
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _404 NOT FOUND_.
-
-- **Exemplos de retornos**:
-
-  - Deletando um developer com sucesso:
-    | Resposta do servidor: |
-    | ---------------------------- |
-    | Body: nenhum body |
-    | Status code: _204 NO CONTENT_ |
-
-    ```json
-
-    ```
-
-  - Tentando deletar com um id inexistente:
-
-    | Resposta do servidor:        |
-    | ---------------------------- |
-    | Body: Formato Json           |
-    | Status code: _404 NOT FOUND_ |
-
-    ```json
-    {
-      "message": "Developer not found."
-    }
-    ```
-
-#
-
-### **POST /developers/:id/infos**
-
-- **Sucesso**:
-  - Retorno esperado: objeto contendo as seguintes chaves:
-    - **id**: tipo **_number_**
-    - **developerSince**: tipo **_Date_**, formato americano YYYY-MM-DD.
-    - **preferredOS**: tipo **_string_**
-    - **developerId**: tipo **_number_**
-  - Status esperado: _201 CREATED_
-- **Falha**:
-  - Caso o developer com id informado já contém uma informação adicional:
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _409 CONFLICT_.
-  - Caso: preferredOS informado não é um dos três permitidos:
-    - Body esperado: um objeto contendo a chave message com uma mensagem adequada e uma chave options sendo um array contendo as três opções possíveis;
-    - Status esperado: 400 BAD REQUEST.
-  - Caso o id informado não pertença a nenhum developer cadastrado
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _404 NOT FOUND_.
-- **Exemplos de retornos**:
-  | Dados de entrada: |
-  | ----------------- |
-  | Body: Formato Json |
-
-  ```json
-  {
-    "developerSince": "2013-01-01",
-    "preferredOS": "MacOS"
-  }
-  ```
-
-  - Criando uma informação adicional com sucesso:
-    | Resposta do servidor: |
-    | ---------------------------- |
-    | Body: Formato Json |
-    | Status code: _201 CREATED_ |
-
-    ```json
-    {
-      "id": 1,
-      "developerSince": "2013-01-01T02:00:00.000Z",
-      "preferredOS": "MacOS",
-      "developerId": 1
-    }
-    ```
-
-  - Tentando cadastrar informação à um developer que já possui:
-
-    | Resposta do servidor:       |
-    | --------------------------- |
-    | Body: Formato Json          |
-    | Status code: _409 CONFLICT_ |
-
-    ```json
-    {
-      "message": "Developer infos already exists."
-    }
-    ```
-
-  - Tentando cadastrar informação com um preferredOS inválido:
-
-    | Resposta do servidor:          |
-    | ------------------------------ |
-    | Body: Formato Json             |
-    | Status code: _400 BAD REQUEST_ |
-
-    ```json
-    {
-      "message": "Invalid OS option."
-    }
-    ```
-
-  - Tentando cadastrar informação com um developer id inválido:
-
-    | Resposta do servidor:        |
-    | ---------------------------- |
-    | Body: Formato Json           |
-    | Status code: _404 NOT FOUND_ |
-
-    ```json
-    {
-      "message": "Developer not found."
-    }
-    ```
-
-#
-
-## **Rota - /projects**
-
-### Endpoints
-
-| Método | Endpoint      | Responsabilidade                                      |
-| ------ | ------------- | ----------------------------------------------------- |
-| POST   | /projects     | Cadastrar um novo projeto                             |
-| GET    | /projects/:id | Listar um projeto pelo id e os dados do desenvolvedor |
-| PATCH  | /projects/:id | Atualizar um projeto                                  |
-
-## Regras da aplicação
-
-### **POST - /projects**
-
-- **Sucesso**:
-
-  - Retorno esperado: objeto contendo todos o dados do projeto criado;
-  - Status esperado: _201 CREATED_
-
-- **Falha**:
-  - Caso o developerId não pertença a nenhum developer cadastrado
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _404 NOT FOUND_.
-- **Exemplos de retornos**:
-  | Dados de entrada: |
-  | ----------------- |
-  | Body: Formato Json |
-
-  ```json
-  // sem endDate e sem developerId
-  {
-    "name": "Projeto 1",
-    "description": "Projeto fullstack",
-    "repository": "url.com.br",
-    "startDate": "2023-12-02",
-  }
-
-  // com endDate e com developerId
-  {
-    "name": "Projeto 2",
-    "description": "Projeto backend",
-    "repository": "url.com.br",
-    "startDate": "2023-12-10",
-    "endDate": "2023-12-23",
-    "developerId": 1
-  }
-  ```
-
-  - Criando um projeto com sucesso:
-    | Resposta do servidor: |
-    | ---------------------------- |
-    | Body: Formato Json |
-    | Status code: _201 CREATED_ |
-
-    ```json
-    // sem endDate e sem developerId no body de envio
-    {
-      "id": 1,
-      "name": "Projeto 1",
-      "description": "Projeto fullstack",
-      "repository": "url.com.br",
-      "startDate": "2023-12-02T03:00:00.000Z",
-      "endDate": null,
-      "developerId": null
-    }
-
-    // com endDate no body de envio
-    {
-      "id": 2,
-      "name": "Projeto 2",
-      "description": "Projeto backend",
-      "repository": "url.com.br",
-      "startDate": "2023-12-10T03:00:00.000Z",
-      "endDate": "2023-12-23T03:00:00.000Z",
-      "developerId": 1
-    }
-    ```
-
-  - Tentando criar com um developerId inválido:
-    | Resposta do servidor: |
-    | ---------------------------- |
-    | Body: Formato Json |
-    | Status code: _404 NOT FOUND_ |
-
-    ```json
-    {
-      "message": "Developer not found."
-    }
-    ```
-
-#
-
-### **GET - /projects/:id**
-
-- **Sucesso**:
-  - Retorno esperado: um objeto contendo todos os dados relacionados ao projeto e o nome do desenvolvedor;
-  - Status esperado: _200 OK_
-- **Falha**:
-  - Caso o id não pertença a um project cadastrado
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _404 NOT FOUND_.
-- **Exemplos de retornos**:
-
-  - Listando um projeto com sucesso:
-    | Resposta do servidor: |
-    | ---------------------------- |
-    | Body: Formato Json |
-    | Status code: _200 OK_ |
-
-    ```json
-        {
-            "projectId": 1,
-            "projectName": "Projeto 1",
-            "projectDescription": "Projeto fullstack",
-            "projectRepository": "url.com.br",
-            "projectStartDate": "2023-12-02T03:00:00.000Z",
-            "projectEndDate": null,
-            "projectDeveloperName": "ugo"
-        },
-    ```
-
-  - Tentando listar com um projectId inválido:
-    | Resposta do servidor: |
-    | ---------------------------- |
-    | Body: Formato Json |
-    | Status code: _404 NOT FOUND_ |
-
-    ```json
-    {
-      "message": "Project not found."
-    }
-    ```
-
-#
-
-### **PATCH - /projects/:id**
-
-- **Sucesso**:
-  - Retorno esperado: objeto contendo todos os dados do projeto que foi atualizado;
-  - Status esperado: _200 OK_
-- **Falha**:
-  - Caso o id informado na url não pertence à um projeto cadastrado
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _404 NOT FOUND_.
-  - Caso o developerId informado no body não pertença à um developer cadastrado
-    - Retorno esperado: um objeto contendo a chave **_message_** com uma mensagem adequada;
-    - Status esperado: _404 NOT FOUND_.
-- **Exemplos de retornos**:
-  | Dados de entrada: |
-  | ----------------- |
-  | Body: Formato Json |
-
-  ```json
-  {
-    "name": "Novo nome",
-    "description": "Nova descrição",
-    "repository": "novaurl.com.br",
-    "startDate": "2022-11-13",
-    "endDate": "2023-11-13",
-    "developerId": 2
-  }
-  ```
-
-  - Atualizando um projeto com sucesso:
-    | Resposta do servidor: |
-    | ---------------------------- |
-    | Body: Formato Json |
-    | Status code: _200 OK_ |
+- **Resposta de Sucesso (201 Created):**
 
   ```json
   {
     "id": 1,
-    "name": "Novo nome",
-    "description": "Nova descrição",
-    "repository": "novaurl.com.br",
-    "startDate": "2022-11-13T03:00:00.000Z",
-    "endDate": "2023-11-13T03:00:00.000Z",
-    "developerId": 2
+    "name": "Nome do Desenvolvedor",
+    "email": "email@example.com"
   }
   ```
 
-  - Tentando atualizar com um project id inválido:
-    | Resposta do servidor: |
-    | ---------------------------- |
-    | Body: Formato Json |
-    | Status code: _404 NOT FOUND_ |
+#### GET `/developers/:id`
 
-    ```json
-    {
-      "message": "Project not found."
-    }
-    ```
+Retorna informações detalhadas de um desenvolvedor, incluindo informações adicionais associadas.
 
-  - Tentando atualizar com um developerId inválido:
-    | Dados de entrada: |
-    | ----------------- |
-    | Body: Formato Json |
+- **Resposta de Sucesso (200 OK):**
 
-    ```json
-    {
-      "developerId": 9999
-    }
-    ```
+  ```json
+  {
+    "developerId": 1,
+    "developerName": "Nome do Desenvolvedor",
+    "developerEmail": "email@example.com",
+    "developerInfoDeveloperSince": "2020-01-01",
+    "developerInfoPreferredOS": "Windows"
+  }
+  ```
 
-    | Resposta do servidor:        |
-    | ---------------------------- |
-    | Body: Formato Json           |
-    | Status code: _404 NOT FOUND_ |
+#### PATCH `/developers/:id`
 
-    ```json
-    {
-      "message": "Developer not found."
-    }
-    ```
+Atualiza os dados de um desenvolvedor.
+
+- **Body de Requisição:**
+
+  ```json
+  {
+    "name": "Novo Nome"
+  }
+  ```
+
+- **Resposta de Sucesso (200 OK):**
+
+  ```json
+  {
+    "id": 1,
+    "email": "email@example.com",
+    "name": "Novo Nome"
+  }
+  ```
+
+#### DELETE `/developers/:id`
+
+Remove um desenvolvedor.
+
+- **Resposta de Sucesso (204 No Content).**
+
+#### POST `/developers/:id/infos`
+
+Cadastra informações adicionais para um desenvolvedor.
+
+- **Body de Requisição:**
+
+  ```json
+  {
+    "developerSince": "2020-01-01",
+    "preferredOS": "Windows"
+  }
+  ```
+
+- **Resposta de Sucesso (201 Created):**
+
+  ```json
+  {
+    "id": 1,
+    "developerSince": "2020-01-01",
+    "preferredOS": "Windows",
+    "developerId": 1
+  }
+  ```
+
+### Projetos
+
+#### POST `/projects`
+
+Cadastra um novo projeto.
+
+- **Body de Requisição:**
+
+  ```json
+  {
+    "name": "Nome do Projeto",
+    "description": "Descrição do Projeto",
+    "repository": "https://github.com/seu_usuario/seu_repositorio",
+    "startDate": "2023-08-17"
+  }
+  ```
+
+- **Resposta de Sucesso (201 Created):**
+
+  ```json
+  {
+    "id": 1,
+    "name": "Nome do Projeto",
+    "description": "Descrição do Projeto",
+    "repository": "https://github.com/seu_usuario/seu_repositorio",
+    "startDate": "2023-08-17T00:00:00.000Z",
+    "endDate": null,
+    "developerId": null
+  }
+  ```
+
+#### GET `/projects/:id`
+
+Retorna informações detalhadas de um projeto, incluindo dados do desenvolvedor associado.
+
+- **Resposta de Sucesso (200 OK):**
+
+  ```json
+  {
+    "projectId": 1,
+    "projectName": "Nome do Projeto",
+    "projectDescription": "Descrição do Projeto",
+    "projectRepository": "https://github.com/seu_usuario/seu_repositorio",
+    "projectStartDate": "2023-08-17T00:00:00.000Z",
+    "projectEndDate": null,
+    "projectDeveloperName": null
+  }
+  ```
+
+#### PATCH `/projects/:id`
+
+Atualiza os dados de um projeto.
+
+- **Body
+
+ de Requisição:**
+
+  ```json
+  {
+    "description": "Nova Descrição"
+  }
+  ```
+
+- **Resposta de Sucesso (200 OK):**
+
+  ```json
+  {
+    "id": 1,
+    "name": "Nome do Projeto",
+    "description": "Nova Descrição",
+    "repository": "https://github.com/seu_usuario/seu_repositorio",
+    "startDate": "2023-08-17T00:00:00.000Z",
+    "endDate": null,
+    "developerId": null
+  }
+  ```
+
+## Contribuição
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request.
