@@ -30,12 +30,12 @@ Uma startup de tecnologia e desenvolvimento web decidiu criar uma API Rest para 
 
 ## Tecnologias Utilizadas
 
-![TypeScript](https://img.shields.io/badge/TypeScript-4.x-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.1.6-blue.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-latest-green.svg)
-![Express](https://img.shields.io/badge/Express-4.x-blue.svg)
-![pg](https://img.shields.io/badge/pg-8.x-blue.svg)
-![pg-format](https://img.shields.io/badge/pg--format-latest-lightgrey.svg)
-![dotenv](https://img.shields.io/badge/dotenv-latest-yellow.svg)
+![Express](https://img.shields.io/badge/Express-4.18.2-blue.svg)
+![pg](https://img.shields.io/badge/pg-8.11.2-blue.svg)
+![pg-format](https://img.shields.io/badge/pg--format-1.0.4-lightgrey.svg)
+![dotenv](https://img.shields.io/badge/dotenv-16.3.1-yellow.svg)
 
 ## Iniciando
 
